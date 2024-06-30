@@ -86,6 +86,11 @@ $> Re-enter password:
 sudo docker build -t googya_ocserv .
 ```
 
+push code using a different key
+```shell
+GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_ed25519 -o IdentitiesOnly=yes -F /dev/null' git push
+```
+
 ### 关于限速, 我想应该是网络的干扰. 我部署的服务器 ( [1.5 MB/s](https://toolstud.io/data/bandwidth.php?compare=network&speed=1.5&speed_unit=MB%2Fs) 大概 12 Mbps) 如下:  
 ![AnyConnect](http://77g8qz.com1.z0.glb.clouddn.com/anyconnect.png?imageView2/2/w/300)
 
