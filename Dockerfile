@@ -1,5 +1,5 @@
-FROM ubuntu:trusty
-MAINTAINER Wyatt Pan <wppurking@gmail.com>
+FROM arm64v8/ubuntu:latest
+LABEL maintainer="Googya <https://github.com/googya>"
 
 ADD ./certs /opt/certs
 ADD ./bin /usr/local/bin
@@ -10,12 +10,46 @@ WORKDIR /etc/ocserv
 # china timezone
 RUN echo "Asia/Shanghai" > /etc/timezone
 
-# install compiler, dependencies, tools , dnsmasq
+# install essential tools
 RUN apt-get update && apt-get install -y \
-    build-essential wget xz-utils libgnutls28-dev \
-    libev-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev \
+    build-essential wget xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# install additional dependencies in steps
+RUN apt-get update && apt-get install -y \
+    libgnutls28-dev libev-dev libwrap0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    libpam0g-dev libseccomp-dev libreadline-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
     libnl-route-3-dev libkrb5-dev liboath-dev libtalloc-dev \
-    libhttp-parser-dev libpcl1-dev libopts25-dev autogen pkg-config nettle-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# install remaining dependencies one by one to identify the problematic package
+RUN apt-get update && apt-get install -y \
+    libhttp-parser-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    libopts25-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    autogen \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    nettle-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
     gnutls-bin gperf liblockfile-bin nuttcp lcov iptables unzip dnsmasq \
     && rm -rf /var/lib/apt/lists/*
 
